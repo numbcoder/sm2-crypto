@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "openssl"
 
 module SM2Crypto
@@ -39,9 +40,7 @@ module SM2Crypto
     y2 = p_bin_str[33, 32]
 
     t = kdf(x2 + y2, data.bytesize)
-    while t[0, 8].uniq == [0] && t.uniq == [0] do
-      t = kdf(x2 + y2, data.bytesize)
-    end
+    t = kdf(x2 + y2, data.bytesize) while t[0, 8].uniq == [0] && t.uniq == [0]
 
     c2 = data.each_byte.map.with_index { |b, i| b ^ t[i] }.pack("C*")
 
