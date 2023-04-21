@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sm2-crypto (0.1)
+    sm2-crypto (0.2)
 
 GEM
   remote: https://rubygems.org/
