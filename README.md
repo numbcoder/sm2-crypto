@@ -30,13 +30,15 @@ $ gem install sm2-crypto
 
 ## Usage
 
+### Encrypt and Decrypt
+
 ```ruby
 require 'sm2_crypto'
 
 # Generate key pair
 keypair = OpenSSL::PKey::EC.generate("SM2")
 private_key = keypair.private_key.to_s(2)
-public_key = keypair.public_key.to_bn.to_s(2)
+public_key = keypair.public_key.to_octet_string(:uncompressed)
 
 # Encrypt data
 message = "Hello, SM2 encryption!"
@@ -46,6 +48,28 @@ puts "Encrypted message: #{encrypted_data}"
 # Decrypt data
 decrypted_message = SM2Crypto.decrypt(private_key, encrypted_data)
 puts "Decrypted message: #{decrypted_message}"
+```
+
+### Sign and Verify
+
+```ruby
+message = "Hello, SM2 signature!"
+# get signatrue
+sign = SM2Crypto.sign(private_key, message)
+# verify signatrue
+SM2Crypto.verify(public_key, message, sign)
+
+user_id = "31323334353637383132333435363738" # user_id should be a hex string
+# sign with hash and user_id
+sign = SM2Crypto.sign(private_key, message, sm3_hash: true, user_id: user_id)
+# verify with hash and user_id
+SM2Crypto.verify(public_key, message, sign, sm3_hash: true, user_id: user_id)
+```
+
+### Get Public Key from Private Key
+
+```ruby
+public_key = SM2Crypto.get_public_key(private_key)
 ```
 
 ## Contributing

@@ -49,7 +49,7 @@ class SM2CryptoTest < Minitest::Test
   def test_generate_keypairs
     keypair = OpenSSL::PKey::EC.generate("SM2")
     private_key = keypair.private_key.to_s(2)
-    public_key = keypair.public_key.to_bn.to_s(2)
+    public_key = keypair.public_key.to_octet_string(:uncompressed)
 
     msg = SecureRandom.random_bytes(rand(10..100))
     encrypted_data = SM2Crypto.encrypt(public_key, msg)
