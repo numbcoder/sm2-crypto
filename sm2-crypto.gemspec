@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "sm2-crypto"
-  spec.version = "0.2"
+  spec.version = "0.2.1"
   spec.authors = ["Seekr"]
   spec.email = ["wzhao23@gmail.com"]
 
