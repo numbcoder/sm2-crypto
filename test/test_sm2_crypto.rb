@@ -75,16 +75,24 @@ class SM2CryptoTest < Minitest::Test
     assert_equal public_key, SM2Crypto.get_public_key(private_key)
   end
 
-  def test_sign
+  def test_sign_and_verify
     msg = "abc"
     sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg)
     assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign)
+
+    cjk_msg = "abc1234XYZ@%& 你好，世界！#{SecureRandom.alphanumeric(rand(1000..10_000))}"
+    sign2 = SM2Crypto.sign(SM2_PRIVATE_KEY, cjk_msg)
+    assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, cjk_msg, sign2)
   end
 
-  def test_sign_with_hash
+  def test_sign_and_verify_with_hash
     msg = "abc"
     user_id = "313233343536373831323334353637AA"
     sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg, sm3_hash: true, user_id: user_id)
     assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign, sm3_hash: true, user_id: user_id)
+
+    cjk_msg = "abc1234XYZ@%& 你好，世界！#{SecureRandom.alphanumeric(rand(1000..10_000))}"
+    sign2 = SM2Crypto.sign(SM2_PRIVATE_KEY, cjk_msg, sm3_hash: true)
+    assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, cjk_msg, sign2, sm3_hash: true)
   end
 end

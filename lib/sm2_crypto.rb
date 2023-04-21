@@ -130,7 +130,7 @@ module SM2Crypto
       s = ((one + da).mod_inverse(n) * (k - (r * da))).to_i % n.to_i
     end
 
-    r.to_s(16) + s.to_s(16)
+    r.to_s(16).rjust(64, "0") + s.to_s(16).rjust(64, "0")
   end
 
   # verify the signature with public_key
@@ -172,7 +172,7 @@ module SM2Crypto
 
   # ZA = H256(ENTLA || IDA || a || b || gx || gy || px || py)
   def za(public_key, user_id)
-    ida = user_id.unpack1("a*")
+    ida = [user_id].pack("H*")
     entla = [ida.size * 8].pack("n")
     a = ["FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC"].pack("H*")
     b = ["28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93"].pack("H*")
