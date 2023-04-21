@@ -64,4 +64,27 @@ class SM2CryptoTest < Minitest::Test
     decrypted_data = SM2Crypto.decrypt(private_key, Base64.decode64(encrypted_data))
     assert_equal msg, decrypted_data
   end
+
+  def test_get_publick_key
+    public_key = SM2Crypto.get_public_key(SM2_PRIVATE_KEY)
+    assert_equal SM2_PUBLIC_KEY, public_key
+
+    keypair = OpenSSL::PKey::EC.generate("SM2")
+    private_key = keypair.private_key.to_s(2)
+    public_key = keypair.public_key.to_bn.to_s(2)
+    assert_equal public_key, SM2Crypto.get_public_key(private_key)
+  end
+
+  def test_sign
+    msg = "abc"
+    sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg)
+    assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign)
+  end
+
+  def test_sign_with_hash
+    msg = "abc"
+    user_id = "313233343536373831323334353637AA"
+    sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg, sm3_hash: true, user_id: user_id)
+    assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign, sm3_hash: true, user_id: user_id)
+  end
 end
