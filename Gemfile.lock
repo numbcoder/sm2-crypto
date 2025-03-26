@@ -6,18 +6,19 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    minitest (5.18.0)
-    rake (13.0.6)
+    minitest (5.25.5)
+    rake (13.2.1)
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-23
   arm64-darwin-24
   x86_64-linux
 
 DEPENDENCIES
-  minitest (~> 5.0)
-  rake (~> 13.0)
+  minitest (~> 5.25)
+  rake (~> 13.2)
   sm2-crypto!
 
 BUNDLED WITH
-   2.4.6
+   2.4.20
