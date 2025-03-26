@@ -59,11 +59,17 @@ sign = SM2Crypto.sign(private_key, message)
 # verify signatrue
 SM2Crypto.verify(public_key, message, sign)
 
-user_id = "31323334353637383132333435363738" # user_id should be a hex string
+# user_id should be a hex string, default: "31323334353637383132333435363738" which is equal to utf-8 string: "1234567812345678"
+user_id = "31323334353637383132333435363738"
 # sign with hash and user_id
 sign = SM2Crypto.sign(private_key, message, sm3_hash: true, user_id: user_id)
 # verify with hash and user_id
 SM2Crypto.verify(public_key, message, sign, sm3_hash: true, user_id: user_id)
+
+# sign with ASN.1 DER format output
+sign = SM2Crypto.sign(private_key, message, asn1: true)
+# verify signatrue
+SM2Crypto.verify(public_key, message, sign, asn1: true)
 ```
 
 ### Get Public Key from Private Key

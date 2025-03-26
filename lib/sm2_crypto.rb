@@ -149,7 +149,7 @@ module SM2Crypto
   # @return [Boolean] verify result
   def verify(public_key, data, signature, sm3_hash: false, user_id: "31323334353637383132333435363738", asn1: false)
     if asn1
-      # return false if signature.size < 138
+      return false if signature.size < 136
 
       # parse asn1 der format hex string signature
       der_seq = OpenSSL::ASN1.decode([signature].pack("H*"))

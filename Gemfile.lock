@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sm2-crypto (0.2.1)
+    sm2-crypto (0.2.2)
 
 GEM
   remote: https://rubygems.org/
@@ -11,6 +11,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-24
   x86_64-linux
 
 DEPENDENCIES

@@ -101,10 +101,6 @@ class SM2CryptoTest < Minitest::Test
       msg = SecureRandom.alphanumeric(rand(1..100))
       sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg, asn1: true)
       verified = SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign, asn1: true)
-      unless verified
-        puts "msg: #{msg}"
-        puts "sign: #{sign}"
-      end
       assert_equal true, verified
     end
   end
