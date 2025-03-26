@@ -95,4 +95,30 @@ class SM2CryptoTest < Minitest::Test
     sign2 = SM2Crypto.sign(SM2_PRIVATE_KEY, cjk_msg, sm3_hash: true)
     assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, cjk_msg, sign2, sm3_hash: true)
   end
+
+  def test_sign_and_verify_with_asn1
+    30.times do
+      msg = SecureRandom.alphanumeric(rand(1..100))
+      sign = SM2Crypto.sign(SM2_PRIVATE_KEY, msg, asn1: true)
+      verified = SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign, asn1: true)
+      unless verified
+        puts "msg: #{msg}"
+        puts "sign: #{sign}"
+      end
+      assert_equal true, verified
+    end
+  end
+
+  def test_sign_and_verify_with_asn1_and_hash
+    msg = "z0I15DTbsWjF"
+    signs = %w[
+      304402203bd708d89b9728af3939f77df68bd4c2bc3038cb5de92bfdfd11468165caa87302204136f5345177d1eb663e33c18922fed5440dec0cc68b3c39def76b87ef77d177
+      3045022100e84b35c282ec4afbf337fff6e978c99fd3126745f436f8abd3cc897b0c784d160220482aecc68fe47334385ac98af508ea589b11d0d22d4ac065d663bd1034eafd38
+      3045022100f10f4403dc670ceb30ae7b15c9ea06f01274fc8c796060ea39ae3d0eab37e310022049eef876e073d0595c6444cc3b23917948da706755a6a38a1f23e3841c67a279
+      3046022100f9762c583bef7331a7a16295d98c3413fa4fd7e579ace06842956ca9ce385752022100819eac8da0b92c5babacad868f3fe7af118bf1cbbc59c2629f54e8db925c7e4e
+    ]
+    signs.each do |sign|
+      assert_equal true, SM2Crypto.verify(SM2_PUBLIC_KEY, msg, sign, sm3_hash: true, asn1: true)
+    end
+  end
 end

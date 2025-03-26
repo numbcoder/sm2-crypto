@@ -101,9 +101,10 @@ module SM2Crypto
   # @param private_key [String] private key, format: binary string
   # @param data [String]
   # @param sm3_hash [Boolean], option to sign with sm3 hash, default: false
-  # @param user_id [String], format: hex string, default: "31323334353637383132333435363738"
+  # @param user_id [String], format: hex string, default: "31323334353637383132333435363738" which is equal to utf-8 str "1234567812345678"
+  # @param asn1 [Boolean], option to return asn.1 der format signature, default: false
   # @return [String] signature, format: hex string
-  def sign(private_key, data, sm3_hash: false, user_id: "31323334353637383132333435363738")
+  def sign(private_key, data, sm3_hash: false, user_id: "31323334353637383132333435363738", asn1: false)
     data = data.unpack1("a*") unless data.ascii_only?
     if sm3_hash
       public_key = get_public_key(private_key)
@@ -130,7 +131,11 @@ module SM2Crypto
       s = ((one + da).mod_inverse(n) * (k - (r * da))).to_i % n.to_i
     end
 
-    r.to_s(16).rjust(64, "0") + s.to_s(16).rjust(64, "0")
+    if asn1
+      OpenSSL::ASN1::Sequence.new([OpenSSL::ASN1::Integer.new(r), OpenSSL::ASN1::Integer.new(s)]).to_der.unpack1("H*")
+    else
+      r.to_s(16).rjust(64, "0") + s.to_s(16).rjust(64, "0")
+    end
   end
 
   # verify the signature with public_key
@@ -140,17 +145,28 @@ module SM2Crypto
   # @param signature [String], hex string
   # @param sm3_hash [Boolean], option to sign with sm3 hash, default: false
   # @param user_id [String], format: hex string, default: "31323334353637383132333435363738"
+  # @param asn1 [Boolean], option to verify asn.1 der format signature, default: false
   # @return [Boolean] verify result
-  def verify(public_key, data, signature, sm3_hash: false, user_id: "31323334353637383132333435363738")
-    return false if signature.size != 128
+  def verify(public_key, data, signature, sm3_hash: false, user_id: "31323334353637383132333435363738", asn1: false)
+    if asn1
+      # return false if signature.size < 138
+
+      # parse asn1 der format hex string signature
+      der_seq = OpenSSL::ASN1.decode([signature].pack("H*"))
+      r = der_seq.value[0].value
+      s = der_seq.value[1].value
+    else
+      return false if signature.size != 128
+
+      r = OpenSSL::BN.new(signature[0, 64], 16)
+      s = OpenSSL::BN.new(signature[64, 64], 16)
+    end
 
     public_key = "\x04#{public_key}" if public_key.size == 64 && public_key[0] != "\x04"
     data = data.unpack1("a*") unless data.ascii_only?
     if sm3_hash
       data = OpenSSL::Digest.digest("SM3", za(public_key, user_id) + data)
     end
-    r = OpenSSL::BN.new(signature[0, 64], 16)
-    s = OpenSSL::BN.new(signature[64, 64], 16)
     n = OpenSSL::BN.new("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
     e = OpenSSL::BN.new(data, 2)
 
