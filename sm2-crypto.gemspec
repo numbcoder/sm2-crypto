@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+require_relative "lib/sm2-crypto"
 
 Gem::Specification.new do |spec|
   spec.name = "sm2-crypto"
-  spec.version = "0.2.2"
+  spec.version = SM2Crypto::VERSION
   spec.authors = ["Seekr"]
   spec.email = ["wzhao23@gmail.com"]
 

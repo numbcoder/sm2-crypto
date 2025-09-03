@@ -33,7 +33,7 @@ $ gem install sm2-crypto
 ### Encrypt and Decrypt
 
 ```ruby
-require 'sm2_crypto'
+require 'sm2-crypto'
 
 # Generate key pair
 keypair = OpenSSL::PKey::EC.generate("SM2")

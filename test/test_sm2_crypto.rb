@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
-require "sm2_crypto"
+require "sm2-crypto"
 require "base64"
 require "securerandom"
 

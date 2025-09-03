@@ -3,6 +3,8 @@
 require "openssl"
 
 module SM2Crypto
+  VERSION = "0.3.0"
+
   module_function
 
   # Key Derived Function
